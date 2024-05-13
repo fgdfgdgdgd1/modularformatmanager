@@ -1,21 +1,14 @@
-function addTwoNumbers(l1, l2) {
-  const dummy = new ListNode(0);
-  let p = l1,
-    q = l2,
-    curr = dummy;
-  let carry = 0;
-  while (p !== null || q !== null) {
-    const x = p !== null ? p.val : 0;
-    const y = q !== null ? q.val : 0;
-    const sum = x + y + carry;
-    carry = Math.floor(sum / 10);
-    curr.next = new ListNode(sum % 10);
-    curr = curr.next;
-    if (p !== null) p = p.next;
-    if (q !== null) q = q.next;
-  }
-  if (carry > 0) {
-    curr.next = new ListNode(carry);
-  }
-  return dummy.next;
-}
+const senderSignature = aptos.transaction.sign({ signer: alice, transaction });
+
+// Sponsor signs
+const sponsorSignature = aptos.transaction.signAsFeePayer({
+  signer: sponsor,
+  transaction,
+});
+
+// Submit the transaction to chain
+const committedTxn = await aptos.transaction.submit.simple({
+  transaction,
+  senderAuthenticator: senderSignature,
+  feePayerAuthenticator: sponsorSignature,
+});
